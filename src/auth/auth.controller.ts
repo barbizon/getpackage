@@ -9,8 +9,7 @@ export class AuthController {
     
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Request() req) {
-        console.debug(process.env.DATABASE_USER);
+    async login(@Request() req) { 
         return this.authService.login(req.user);
     } 
 } 
