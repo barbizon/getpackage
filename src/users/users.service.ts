@@ -1,41 +1,26 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+import { MongoRepository } from 'typeorm/repository/MongoRepository';
 import { User } from './user';
+import { UserEntity } from './user.entity';
  
 @Injectable()
-export class UsersService {
-  private readonly users: User[];
+export class UsersService { 
+  constructor(@InjectRepository(UserEntity) 
+    private readonly usersRepository: MongoRepository<UserEntity>) { }
 
-  constructor() {
-    this.users = [
-      {
-        userId: 1,
-        username: 'john',
-        password: 'changeme',
-        isCourier: true,
-        isSender: true,
-      },
-      {
-        userId: 2,
-        username: 'chris',
-        password: 'secret',
-        isCourier: true,
-        isSender: true,
-      },
-      {
-        userId: 3,
-        username: 'maria',
-        password: 'guess',
-        isCourier: true,
-        isSender: true,
-      },
-    ];
+  async findOne(username: string): Promise<User | undefined> { 
+      var users = await this.usersRepository.find({ username: username }); 
+      return users[0]; 
   }
 
-  async findOne(username: string): Promise<User | undefined> {
-    return this.users.find(user => user.username === username);
+  async findLogin(username: string, pwd: string): Promise<User | undefined> {  
+      var users = await this.usersRepository.find({ username: username, passwordHash: pwd });  
+      return users[0]; 
   }
 
   async getAll(): Promise<User[] | undefined> {
-    return this.users;
+    return await this.usersRepository.find();
   }
 }
