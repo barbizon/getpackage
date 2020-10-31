@@ -11,6 +11,22 @@ export class DeliveriesService {
   constructor(@InjectRepository(DeliveryEntity) 
     private readonly deliveriesRepository: MongoRepository<DeliveryEntity>) { }
 
+  async add(id: string, packageWidth: number, packageHeight: number, cost: number, description: string, deliveryDate: Date) {
+    const deliveryEntity: DeliveryEntity = new DeliveryEntity();
+    const dateString = deliveryDate.toISOString();  
+ 
+    deliveryEntity.packageSize = {width:packageWidth, height: packageHeight };
+    deliveryEntity.cost = cost;
+    deliveryEntity.description = description;
+    deliveryEntity.deliveryDate = new Date(dateString);  
+    deliveryEntity.sender = id;
+    deliveryEntity.createdDate = new Date();
+
+    const result = await this.deliveriesRepository.create(deliveryEntity);
+    const response = await this.deliveriesRepository.save(result);
+    return deliveryEntity;
+  }
+
   async getAll(): Promise<DeliveryEntity[] | undefined> {
     return await this.deliveriesRepository.find();
   }

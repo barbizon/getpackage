@@ -1,6 +1,7 @@
 import { Controller, UseGuards, Get, Post, Request, Query, Body } from '@nestjs/common'; 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { DeliveriesService } from './deliveries.service';
+import { AddDeliveryDto } from './dto/add-delivery.dto';
 import { AssignDeliveryDto } from './dto/assing-delivery.dto';
 import { GetDeliveriesParam } from './dto/get-deliveries.params';
 
@@ -29,8 +30,10 @@ export class DeliveriesController {
 
     @UseGuards(JwtAuthGuard)
     @Post('adddelivery')
-    addDelivery(@Request() req) {
-      return null;
+    async addDelivery(@Body() message: AddDeliveryDto, @Request() req) {
+      const userId = req.user.userId.id;
+      return await this.deliveriesService.add(userId, message.packageWidth, message.packageHeight, 
+        message.cost, message.description, message.deliveryDate); 
     }
 
     @UseGuards(JwtAuthGuard)
