@@ -13,21 +13,16 @@ import { DeliveriesController } from './deliveries/deliveries.controller';
 import { CouriersService } from './couriers/couriers.service';
 import { DeliveriesService } from './deliveries/deliveries.service';
 import { SendersService } from './senders/senders.service';
+import { SenderEntity } from './senders/sender.entity';
+import { SendersModule } from './senders/senders.module';
+import { CouriersModule } from './couriers/couriers.module';
+import { DeliveriesModule } from './deliveries/deliveries.module';
+import { CourierEntity } from './couriers/courier.entity';
+import { DeliveryEntity } from './deliveries/delivery.entity';
 
 @Module({
   imports: [ 
-    TypeOrmModule.forFeature([UserEntity]),
-    // TypeOrmModule.forRoot({
-    //   type: 'mongodb',
-    //   url: 'mongodb+srv://getpackage:get$package@cluster0.yadvv.mongodb.net/getpackage?retryWrites=true&w=majority',
-    //   database: 'getpackage',
-    //   entities: [
-    //     __dirname + '/**/*.entity{.ts,.js}',
-    //   ],
-    //   ssl: true,
-    //   useUnifiedTopology: true,
-    //   useNewUrlParser: true
-    // }), 
+    TypeOrmModule.forFeature([UserEntity, SenderEntity, CourierEntity, DeliveryEntity]), 
     TypeOrmModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         type: 'mongodb',
@@ -45,7 +40,7 @@ import { SendersService } from './senders/senders.service';
     }),
     AuthModule, 
     UsersModule, 
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(), SendersModule, CouriersModule, DeliveriesModule
   ],
   controllers: [AppController, CouriersController, SendersController, DeliveriesController],
   providers: [AppService, CouriersService, DeliveriesService, SendersService],
