@@ -8,7 +8,9 @@ import { SendersService } from './senders.service';
 @Injectable()
 export class SenderGuard extends AuthGuard('jwt') { 
     handleRequest(err, user, info: Error) {
-        return user;
+        const userId = user.userId.id;
+        const isSender = user.userId.isSender; 
+        return isSender ? user : null;
     } 
 }
  

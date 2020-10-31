@@ -1,7 +1,7 @@
-import { Controller, UseGuards, Get, Post, Request, Query } from '@nestjs/common'; 
+import { Controller, UseGuards, Get, Post, Request, Query, Body } from '@nestjs/common'; 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { SenderGuard } from 'src/senders/sender.guard';
 import { DeliveriesService } from './deliveries.service';
+import { AssignDeliveryDto } from './dto/assing-delivery.dto';
 import { GetDeliveriesParam } from './dto/get-deliveries.params';
 
 @Controller('deliveries')
@@ -10,7 +10,7 @@ export class DeliveriesController {
       private deliveriesService: DeliveriesService 
     ) {}
  
-    @UseGuards(SenderGuard)
+    @UseGuards(JwtAuthGuard)
     @Get()
     getAll() {
       return this.deliveriesService.getAll();
@@ -31,5 +31,12 @@ export class DeliveriesController {
     @Post('adddelivery')
     addDelivery(@Request() req) {
       return null;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('assigndelivery')
+    async assignDelivery(@Body() message: AssignDeliveryDto) {
+      console.debug(message);
+      return await this.deliveriesService.assign(message.delivery, message.courier);  
     }
 }
