@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { debug } from 'console';
@@ -8,10 +8,18 @@ import { SendersService } from './senders.service';
 @Injectable()
 export class SenderGuard extends AuthGuard('jwt') { 
     handleRequest(err, user, info: Error) { 
-        console.debug(user);
-        const userId = user.userId.id;
-        const isSender = user.userId.isSender; 
-        return isSender ? user : null;
+        
+        console.debug(user); 
+
+        if(!user || !user.userId.isSender)
+            {
+                throw new HttpException(
+                    'Unauthorized',
+                    HttpStatus.UNAUTHORIZED,
+                  );
+            }
+
+        return user;
     } 
 }
  
