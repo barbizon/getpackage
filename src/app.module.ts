@@ -7,6 +7,12 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UserEntity } from './users/user.entity';
 import { UsersModule } from './users/users.module';
+import { CouriersController } from './couriers/couriers.controller';
+import { SendersController } from './senders/senders.controller';
+import { DeliveriesController } from './deliveries/deliveries.controller';
+import { CouriersService } from './couriers/couriers.service';
+import { DeliveriesService } from './deliveries/deliveries.service';
+import { SendersService } from './senders/senders.service';
 
 @Module({
   imports: [ 
@@ -41,7 +47,7 @@ import { UsersModule } from './users/users.module';
     UsersModule, 
     ConfigModule.forRoot()
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, CouriersController, SendersController, DeliveriesController],
+  providers: [AppService, CouriersService, DeliveriesService, SendersService],
 })
 export class AppModule {}
