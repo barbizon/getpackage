@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common'; 
-import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
-import { IsDate, IsObject } from 'class-validator';
-import { ObjectID, UpdateWriteOpResult } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators'; 
 import { MongoRepository } from 'typeorm/repository/MongoRepository'; 
 import { DeliveryEntity } from './delivery.entity';
 const ObjectId = require('mongodb').ObjectId;
@@ -31,7 +29,10 @@ export class DeliveriesService {
     return await this.deliveriesRepository.find();
   }
 
-  async getByDateSender(id: string, deliveryDate: Date): Promise<DeliveryEntity[] | undefined> {
+  async getByDateSender(id: string, deliveryDate: Date, pageNumber?: number, pageSize?: number): Promise<DeliveryEntity[] | undefined> {
+    const takeVal = (pageSize || 1000000).toString();
+    const skipVal = ((pageNumber - 1) * pageSize || 0).toString();
+
     const dateString = deliveryDate.toISOString();  
 
     return await this.deliveriesRepository.find({
@@ -39,12 +40,17 @@ export class DeliveriesService {
         { $and: [
           { deliveryDate: { $eq: new Date(dateString) } },
           { sender: { $eq: id } }
-        ] }   
+        ] }   ,
+        take: parseInt(takeVal),
+        skip: parseInt(skipVal)
       ,
   });
   }
 
-  async getByDateCourier(id: string, deliveryDate: Date): Promise<DeliveryEntity[] | undefined> {
+  async getByDateCourier(id: string, deliveryDate: Date, pageNumber?: number, pageSize?: number): Promise<DeliveryEntity[] | undefined> {
+    const takeVal = (pageSize || 1000000).toString();
+    const skipVal = ((pageNumber - 1) * pageSize || 0).toString();
+ 
     const dateString = deliveryDate.toISOString(); 
 
     return await this.deliveriesRepository.find({
@@ -52,7 +58,9 @@ export class DeliveriesService {
         { $and: [
           { deliveryDate: { $eq: new Date(dateString) } },
           { courier: { $eq: id } }
-        ] }   
+        ] } ,
+        take: parseInt(takeVal),
+        skip: parseInt(skipVal)
       ,
   });
   }
@@ -65,7 +73,7 @@ export class DeliveriesService {
     //count deliviries
     const deliveryToUpdate = await this.deliveriesRepository.findOne(query);
     const deliveryToUpdateDate = deliveryToUpdate.deliveryDate;  
-    const deliveries = await this.getByDateCourier(courier, deliveryToUpdateDate);
+    const deliveries = await this.getByDateCourier(courier, deliveryToUpdateDate, 1, 5);
 
     if(deliveries.length == 5)
     {
@@ -83,10 +91,7 @@ export class DeliveriesService {
   async getRevenue(id: string, dateFrom: Date, dateTo: Date): Promise<DeliveryEntity[] | undefined> {
     const dateFromString = dateFrom.toISOString(); 
     const dateToString = dateTo.toISOString(); 
-
-    console.debug(dateFromString);
-    console.debug(dateToString);
-
+ 
     return await this.deliveriesRepository.find({
       where: 
         { $and: [

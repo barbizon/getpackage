@@ -25,8 +25,8 @@ export class DeliveriesController {
       const isSender = req.user.userId.isSender; 
        
       return isSender ? 
-        this.deliveriesService.getByDateSender(userId, params.deliveryDate) :
-        this.deliveriesService.getByDateCourier(userId, params.deliveryDate); 
+        this.deliveriesService.getByDateSender(userId, params.deliveryDate, params.pageNumber, params.pageSize) :
+        this.deliveriesService.getByDateCourier(userId, params.deliveryDate, params.pageNumber, params.pageSize); 
     }
 
     @UseGuards(SenderGuard)
@@ -39,8 +39,7 @@ export class DeliveriesController {
 
     @UseGuards(SenderGuard)
     @Post('assigndelivery')
-    async assignDelivery(@Body() message: AssignDeliveryDto) {
-      console.debug(message);
+    async assignDelivery(@Body() message: AssignDeliveryDto) { 
       return await this.deliveriesService.assign(message.delivery, message.courier);  
     }
 }
