@@ -13,12 +13,7 @@ export class UsersService {
   async findOne(username: string): Promise<UserEntity | undefined> { 
       var users = await this.usersRepository.find({ username: username }); 
       return users[0]; 
-  }
-
-  async findLogin(username: string, pwd: string): Promise<UserEntity | undefined> {  
-      var users = await this.usersRepository.find({ username: username, passwordHash: pwd });  
-      return users[0]; 
-  }
+  } 
 
   async getAll(): Promise<UserEntity[] | undefined> {
     return await this.usersRepository.find();

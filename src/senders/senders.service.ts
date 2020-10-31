@@ -11,4 +11,9 @@ export class SendersService {
   async getAll(): Promise<SenderEntity[] | undefined> {
     return await this.sendersRepository.find();
   }
+
+  async findOneByUser(userId: string): Promise<SenderEntity | undefined> { 
+    var sender = await this.sendersRepository.findOne({ userId: userId });  
+    return sender; 
+  }
 }

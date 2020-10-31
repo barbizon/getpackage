@@ -11,4 +11,9 @@ export class CouriersService {
   async getAll(): Promise<CourierEntity[] | undefined> {
     return await this.couriersRepository.find();
   }
+
+  async findOneByUser(userId: string): Promise<CourierEntity | undefined> { 
+    var sender = await this.couriersRepository.findOne({ userId: userId }); 
+    return sender; 
+  }
 }

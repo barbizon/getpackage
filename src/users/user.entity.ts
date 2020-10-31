@@ -6,6 +6,9 @@ export class UserEntity {
   @Column() username: string;
   @Column() passwordHash: string;
 
+  isSender: boolean;
+  isCourier: boolean;
+
   constructor(user?: Partial<UserEntity>) {
     Object.assign(this, user);
   }

@@ -8,8 +8,8 @@ export class DeliveryEntity {
   @Column() packageSize: { width: number, height: number }; 
   @Column() cost: number;
   @Column() description: string;
-  @Column() deliveryDate: string;
-  @Column() createdDate: string;
+  @Column() deliveryDate: Date;
+  @Column() createdDate: Date;
   
   constructor(delivery?: Partial<DeliveryEntity>) {
     Object.assign(this, delivery);
